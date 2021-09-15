@@ -1,0 +1,30 @@
+{
+  "name": "techdegree-fullstackjs-rest-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon ./app.js",
+    "seed": "cross-env DB_ENABLE_LOGGING=true node './seed'"
+  },
+  "keywords": [],
+  "author": "Clark Winters",
+  "repository": "https://github.com/cwinters8/Courses-REST-API",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^1.18.4"
+  },
+  "dependencies": {
+    "basic-auth": "^2.0.1",
+    "bcryptjs": "^2.4.3",
+    "cross-env": "^5.2.1",
+    "express": "^4.17.1",
+    "express-validator": "^5.3.1",
+    "joi": "^17.4.2",
+    "mongodb": "^3.1.8",
+    "mongoose": "^5.13.9",
+    "mongoose-unique-validator": "^2.0.2",
+    "morgan": "^1.9.1",
+    "promise.prototype.finally": "^3.1.0"
+  }
+}

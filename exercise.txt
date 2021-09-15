@@ -1,0 +1,1 @@
+mongoimport --db fsjstd-restapi --collection courses --drop --file RESTAPI.postman_collection.json --jsonArray
