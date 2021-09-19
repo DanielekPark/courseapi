@@ -26,7 +26,7 @@ const courseSchema = new mongoose.Schema({
     type: String
     }
 }); 
-//responseschema
+
 function validateCourse(course) {
   const schema = {
     title: Joi.string().min(3).max(75).required(),

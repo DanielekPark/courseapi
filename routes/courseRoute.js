@@ -2,7 +2,7 @@ const {Course} = require('../models/courseModel');
 const mongoose = require('mongoose');
 const express = require('express');
 const router = express.Router();
-const {userSchema} = require('../models/userModel'); 
+const {User} = require('../models/userModel'); 
 
 // api/courses
 
@@ -29,9 +29,13 @@ router.post('/', async (req, res) => {
   //VALIDATION
   // const { error } = validate(req.body); 
   // if (error) return res.status(400).send(error.details[0].message);
+  
+  const user = await User.findById(req.body._id);
+  //NEEDS A 400 MESSAGE IF NOT FOUND?
 
   //creates a course
   let course = new Course({
+    user: user._id,
     title: req.body.title,
     description: req.body.description,
     estimatedTime: req.body.estimatedTime,
