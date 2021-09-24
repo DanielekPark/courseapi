@@ -1,14 +1,14 @@
 const {Course} = require('../models/courseModel'); 
+const auth = require('../middleware/auth');
 const mongoose = require('mongoose');
 const express = require('express');
 const router = express.Router();
 const {User} = require('../models/userModel'); 
-
+const createError = require('http-errors'); 
 // api/courses
 
 //get
 router.get('/', async (req, res) => {
-  //return a list of courses; includes user that owns each course
   const courses = await Course
     .find()
     .sort('title')
@@ -19,55 +19,52 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   //returns a course; including the user that owns the course for the provided course id
   const course = await Course.findById(req.params.id);
- 
-   //PROBLEM//if(!course) return res.status(404).send('not found'); 
+  
   res.send(course); 
 });
 
 //post
 router.post('/', async (req, res) => {
-  //VALIDATION
-  // const { error } = validate(req.body); 
-  // if (error) return res.status(400).send(error.details[0].message);
-  
-  const user = await User.findById(req.body._id);
-  //NEEDS A 400 MESSAGE IF NOT FOUND?
+  try {
+    let course = new Course({
+      user: user._id,
+      title: req.body.title,
+      description: req.body.description,
+      estimatedTime: req.body.estimatedTime,
+      materialsNeeded: req.body.materialsNeeded
+    });
 
-  //creates a course
-  let course = new Course({
-    user: user._id,
-    title: req.body.title,
-    description: req.body.description,
-    estimatedTime: req.body.estimatedTime,
-    materialsNeeded: req.body.materialsNeeded
-  });
+    course = await course.save(); 
+  }catch (err) {
+    next(createError(400, `there was a problem with ${err}`));
+  }
   
-  course = await course.save(); 
+  const user = await Course.findById(req.body.user); 
+
   //set location header to uri for the course  
-  res.location(`/${req.params.id}`); 
+  res.location(`/${req.params.id}`);
 });
 
 //put
-router.put('/:id', async (req, res) => {
+router.put('/:id', async (req, res, next) => {
   //VALIDATION
-  // const { error } = validate(req.body); 
-  // if (error) return res.status(400).send(error.details[0].message);
-
-  //update a course 
-  const course = await Course.findByIdAndUpdate(req.params.id, {
-    title: req.body.title,
-    description: req.body.description,
-    estimatedTime: req.body.estimatedTime,
-    materialsNeeded: req.body.materialsNeeded    
-  }); 
-
-  //or use const course = await Course.update(req.params.id); 
+  
+  try {
+     let course = await Course.findByIdAndUpdate(req.params.id, {
+      user: req.body.user,
+      title: req.body.title,
+      description: req.body.description,
+      estimatedTime: req.body.estimatedTime,
+      materialsNeeded: req.body.materialsNeeded    
+    }, {new: true}); 
+   
+  }catch (err) {
+    return next(createError(400, `PLEASE FILL OUT REQUIRED INFORMATION ${err} OR CHECK THE ID`));
+  }
 });  
 
 //delete
 router.delete('/:id', async (req, res) => {
-  //display an error if the course isn't found; needs validation, use Joi?
-
   const course = await Course.findByIdAndRemove(req.params.id); 
 });  
 

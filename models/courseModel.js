@@ -10,14 +10,13 @@ const courseSchema = new mongoose.Schema({
   title: {
     type: String, 
     required: true, 
-    trim: true, 
     minlength: 3, 
     maxlength: 75
     }, 
   description: {
     type: String, 
     required: true,
-    maxlength: 200
+    minlength: 5,
     },
   estimatedTime: {
     type: String, 
@@ -26,15 +25,6 @@ const courseSchema = new mongoose.Schema({
     type: String
     }
 }); 
-
-function validateCourse(course) {
-  const schema = {
-    title: Joi.string().min(3).max(75).required(),
-    description: Joi.string().max(200).required(),
-  };
-
-  return Joi.validate(user, schema);
-}
 
 const Course = mongoose.model('course', courseSchema); 
 exports.Course = Course; 
