@@ -24,10 +24,10 @@ router.get('/:id', async (req, res) => {
 });
 
 //post
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
   try {
     let course = new Course({
-      user: user._id,
+      user: req.body.user,
       title: req.body.title,
       description: req.body.description,
       estimatedTime: req.body.estimatedTime,
@@ -35,14 +35,15 @@ router.post('/', async (req, res) => {
     });
 
     course = await course.save(); 
+
   }catch (err) {
     next(createError(400, `there was a problem with ${err}`));
   }
   
   const user = await Course.findById(req.body.user); 
-
   //set location header to uri for the course  
   res.location(`/${req.params.id}`);
+  res.send({}); 
 });
 
 //put
@@ -56,16 +57,18 @@ router.put('/:id', async (req, res, next) => {
       description: req.body.description,
       estimatedTime: req.body.estimatedTime,
       materialsNeeded: req.body.materialsNeeded    
-    }, {new: true}); 
+    }, {new: true, runValidators: true}); 
    
   }catch (err) {
     return next(createError(400, `PLEASE FILL OUT REQUIRED INFORMATION ${err} OR CHECK THE ID`));
   }
+  res.send({}); 
 });  
 
 //delete
 router.delete('/:id', async (req, res) => {
   const course = await Course.findByIdAndRemove(req.params.id); 
+  res.send({}); 
 });  
 
 module.exports = router; 

@@ -30,20 +30,5 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('user', userSchema); 
 
-// function validateUser(user) {
-//   const schema = {
-//     firstName: Joi.string().min(3).max(50).required(),
-//     lastName: Joi.string().min(3).max(50).required(),
-//     emailAddress: Joi.string().min(5).max(100).required(),
-//     password: Joi.string().min(8).max(50).required()
-//   };
-
-//   return schema; 
-// }
-
-//exports.validate = validateUser; 
-
-
-
 exports.User = User;
 exports.userSchema = userSchema;

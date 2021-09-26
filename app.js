@@ -26,8 +26,6 @@ if (!config.get('jwtPrivateKey')) {
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
 
-//https://joi.dev/api/?v=17.4.2
-
 /*
 in app.js add the code: 
 
