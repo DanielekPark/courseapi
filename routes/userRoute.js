@@ -1,4 +1,4 @@
-const {User, validate} = require('../models/userModel');
+const {User} = require('../models/userModel');
 const auth = require('../middleware/auth'); 
 const mongoose = require('mongoose');
 const express = require('express');
@@ -10,13 +10,12 @@ const jwt = require('jsonwebtoken');
 const config = require('config'); 
 
 //ENDPOINT/api/users 200
-router.get('/:id', async (req, res) => {
+router.get('/:id', auth, async (req, res) => {
   //AUTHENICATE USER
   const user = await User.findById(req.params.id);
-  if (!user) return res.status(400).send('ACCESS DENIED');  
+  if (!user) return res.status(400).send('BAD REQUEST');  
   res.send(user);
 });
-
 
 router.post('/', async (req, res, next) => {
   try {
@@ -35,14 +34,11 @@ router.post('/', async (req, res, next) => {
     user = await user.save();
 
     const token = jwt.sign({_id: user._id}, config.get('jwtPrivateKey')); 
-    res.header('auth-token', token).send(_.pick(user['_id', 'name', 'email']));
+    res.header('auth-token', token).location(`/`).send(_.pick(user['_id', 'name', 'email']));
   }catch (err) {
     next(createError(400, `there was a problem with ${err}`));
   }
 
-  res.location('/');
-  res.send({});   
-  next();
 });
 
 module.exports = router; 

@@ -5,9 +5,8 @@ const express = require('express');
 const router = express.Router();
 const {User} = require('../models/userModel'); 
 const createError = require('http-errors'); 
-// api/courses
 
-//get
+// api/courses
 router.get('/', async (req, res) => {
   const courses = await Course
     .find()
@@ -24,7 +23,7 @@ router.get('/:id', async (req, res) => {
 });
 
 //post
-router.post('/', async (req, res, next) => {
+router.post('/', auth, async (req, res, next) => {
   try {
     let course = new Course({
       user: req.body.user,
@@ -33,21 +32,17 @@ router.post('/', async (req, res, next) => {
       estimatedTime: req.body.estimatedTime,
       materialsNeeded: req.body.materialsNeeded
     });
-
     course = await course.save(); 
-
   }catch (err) {
     next(createError(400, `there was a problem with ${err}`));
   }
-  
-  const user = await Course.findById(req.body.user); 
-  //set location header to uri for the course  
-  res.location(`/${req.params.id}`);
-  res.send({}); 
+  //set location header "/"
+  res.location(`/`);
+  return res.send({}); 
 });
 
 //put
-router.put('/:id', async (req, res, next) => {
+router.put('/:id', auth, async (req, res, next) => {
   //VALIDATION
   
   try {
@@ -66,7 +61,7 @@ router.put('/:id', async (req, res, next) => {
 });  
 
 //delete
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
   const course = await Course.findByIdAndRemove(req.params.id); 
   res.send({}); 
 });  
